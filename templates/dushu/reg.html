@@ -1,0 +1,62 @@
+##-*-coding:utf-8-*-
+<%inherit file="base.html" />
+
+<%def name="title()">
+Register page
+</%def>
+
+<%def name="outfile()">
+	<script type="text/javascript" src="/static/js/area.js"></script>
+</%def>
+ 
+<%def name="main()">
+<div class="main">
+	<h2 class="crumbs">加入i-Shu</h2>
+	<form action="" method="post" enctype="multipart/form-data">
+		<div class="form reg_form">
+			<div class="item">
+				<label>Email：</label>
+				<input class="txt w250 a_j_valid" type="text" name="email" />
+				<span class="tips">您的电子邮箱地址,如：ishu@163.com</span>
+			</div>
+			<div class="item">
+				<label>密码：</label>
+				<input class="txt w250 j_valid" type="password" name="fpwd" />
+				<span class="tips">您登录 i-Shu 的密码,6-18位</span>
+			</div>
+			<div class="item">
+				<label>确认密码：</label>
+				<input class="txt w250 j_valid" type="password" name="pwd" />
+				<span class="tips">确认您上一步输入的密码</span>
+			</div>
+			<div class="item">
+				<label>昵称：</label>
+				<input class="txt w250 j_valid" type="text" name="nickname" />
+				<span class="tips">您的昵称，最多12个字母或6个汉字</span>
+			</div>
+			<div class="item">
+				<label>城市：</label>
+				<input class="txt w250 j_valid" type="text" name="city" id="perNative" />
+				<span class="tips">点击选择您的长居地</span>
+			</div>
+			<div class="item">
+				<label class="except">
+					<input class="checkbox" type="checkbox" name="assment" id="assment" autocomplete="off"/>
+					<span class="tips">我已经认真阅读并同意 i-Shu 的<a href="#">《使用协议》</a>。</span>
+				</label>
+			</div>
+			<div class="item">
+				<!--<input class="btn" type="submit" value="立即注册" id="reg_btn" />-->
+				<script type="text/javascript">
+					document.write('<input class="btn disabled" type="submit" value="立即注册" id="reg_btn" disabled />')
+				</script>
+			</div>
+		</div>
+	</form>
+</div>
+<div class="side">
+	<div class="go_login">
+		已经有 i-Shu 帐号？<a href="/login/" hidefocus="true">直接登录</a>
+	</div>
+</div>
+</%def>

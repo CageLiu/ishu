@@ -1,0 +1,30 @@
+##-*-coding:utf-8-*-
+<%inherit file="base.html" />
+
+<%def name="title()">
+	页面跳转中
+</%def>
+
+<%def name="outfile()">
+	<meta http-equiv="Refresh" content="4;URL=/login/?ref_page=${full_path}" />
+</%def>
+
+<%def name="main()">
+	<div class="jumppage">
+		<p>您尚未登录, <span id="second">3</span> 秒钟后将跳转到登录页面</p>
+		<p>如果您的浏览器没有跳转，<a href="/login/?ref_page=${full_path}">请点击这里手动跳转</a></p>
+		<script type="text/javascript">
+			iDuShu.second = 3;
+			var spanSecond = document.getElementById("second");
+			setInterval(function(){
+				if(iDuShu.second >= 0){
+					spanSecond.innerHTML = iDuShu.second--;
+				}
+			},1000);
+		</script>
+	</div>
+</%def>
+
+
+
+

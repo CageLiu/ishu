@@ -1,0 +1,88 @@
+##-*-coding:utf-8-*-
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>
+			${self.title()}
+			<%def name="title()">
+				iDu
+			</%def>
+		</title>
+		<link type="text/css" rel="stylesheet" href="/static/css/style.css" />
+		<script type="text/javascript" src="/static/js/jquery.js"></script>
+		${self.outfile()}
+		<script type="text/javascript" src="/static/js/base.js"></script>
+	</head>
+
+	<body>
+		<div class="hd_outer" id="hd">
+			<iframe class="coveriframe" scrolling="no" frameborder="no"></iframe>
+			<div class="hd_inner">
+				<div class="topbar">
+					<h1 class="logo"><a href="/">i-Shu</a></h1>
+					<ul class="nav">
+						<li>
+							<a 
+							%if currentpage == "index":
+								class="current"
+						   	%endif 
+							href="/">首页</a>
+						</li>
+						<li>
+							<a 
+							%if currentpage == "posts":
+								class="current"
+							%endif
+							href="/posts/">笔记</a>
+						</li>
+						<li>
+							<a 
+							%if currentpage == "book":
+								class="current"
+							%endif
+							href="/book/">书</a>
+						</li>
+						<li>
+							<a 
+							%if currentpage == "user":
+								class="current"
+							%endif
+							href="/user/">用户</a>
+						</li>
+					</ul>
+					<ul class="user">
+						%if cUser:
+						<li><a href="/user/${cUser.id}">${cUser} 的帐号</a></li>
+						<li><a href="/logout/">退出</a></li>
+						%else:
+							<li><a href="/login/?ref_page=${request.get_full_path()}">登录</a></li>
+							<li><a href="/reg/">注册</a></li>
+						%endif
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="wp clearfix" id="wp">
+			${self.main()}
+		</div>
+
+		<div class="ft">
+			<div class="ft_inner clearfix">
+				<p style="float:left;">&copy;
+				<script>
+					document.write((new Date()).getFullYear())
+				</script>
+			  	i-shu.com, all rights reserved</p>
+				<p style="float:right;">
+					<a href="#">关于i-shu</a> |
+					<a href="#">联系我们</a> |
+					<a href="#">免责声明</a> |
+					<a href="#">帮助中心</a> |
+					<a href="#">广告服务</a> 
+				</p>
+			</div>
+		</div>
+	</body>
+</html>

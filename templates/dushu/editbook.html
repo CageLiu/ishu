@@ -1,0 +1,56 @@
+##-*-coding:utf-8-*-
+<%inherit file="base.html" />
+
+<%def name="title()">
+	i-Shu | 添加新书
+</%def>
+
+<%def name="outfile()">
+	<script type="text/javascript" src="/static/js/datepick/WdatePicker.js"></script>
+</%def>
+
+<%def name="main()">
+<div class="main">
+	<h2 class="crumbs">完善 《${item}》 的资料</h2>
+	<div class="form addbook">
+		<form action="" method="post" enctype="multipart/form-data">
+			<div class="item">
+				<label>作者：</label>
+				<input class="txt w200" type="text" name="author" value="${item.author}" />
+				<span class="tips">此书的作者(可选)</span>
+			</div>
+			<div class="item">
+				<label>出版时间：</label>
+				<input class="txt w200 date form_date" type="text" name="publish_time" onfocus="WdatePicker()" value="${item.publish_time}" />
+				<span class="tips">此书的出版时间(可选)</span>
+			</div>
+			<div class="item">
+				<label>出版社：</label>
+				<input class="txt w200" type="text" name="publishers" value="${item.publishers}" />
+				<span class="tips">出版此书的单位(可选)</span>
+			</div>
+			<div class="item">
+				<label>PDF：</label>
+				<input class="txt w300" type="text" name="pdf" value="${item.pdf}" />
+				<span class="tips">此书的PDF版本下载地址(可选)</span>
+			</div>
+			<div class="item">
+				<label>封面：</label>
+				<input type="file" name="bpic" id="truefile" rel="book" />
+				<span class="imitatefile">
+					<input class="txt w166" type="text" id="filetxt" value="${item.bpic}" />
+					<input class="btn" type="button" id="uploadfile" value="选择图片" />
+				</span>
+				<span class="tips">此书的封面,100px * 120px (可选)</span>
+			</div>
+			<div class="item">
+				<input class="btn" type="submit" value="保存修改" id="addbook_btn" />
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="side">
+	&nbsp;
+</div>
+</%def>

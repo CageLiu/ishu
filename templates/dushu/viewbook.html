@@ -1,0 +1,114 @@
+##-*-coding:utf-8-*-
+<%inherit file="base.html" />
+
+<%def name="title()">
+	${item}
+</%def>
+
+<%def name="outfile()"></%def>
+
+<%def name="main()">
+
+<%
+	from idushu.apps.dushu import models as dm
+	book_posts = dm.Posts.objects.filter(book = item.id)
+	saleinfo = dm.Ad.objects.filter(book = item.id)
+	swapinfo = dm.Bookswap.objects.filter(book = item.id)
+	users = [dm.User.objects.get(id = i.user) for i in dm.U_B_Ship.objects.filter(book = item.id)][:16]
+	page = request.GET.get("page",0)
+%>
+
+<h1 class="maintitle">
+	${item}
+	%if cUser and (item.added_by == cUser.id or cUser.permission.settings):
+	<span class="tool">
+		<a href="/edit/book/${item.id}">[完善资料]</a>
+	</span>
+	%endif
+	%if page:
+		<a class="back" href="/book/?page=${page}">&lsaquo;&lsaquo;返回图书馆</a>
+	%endif
+</h1>
+<div class="main">
+	<div class="media bookmedia clearfix">
+		<div class="pic">
+			<img src="${item.bpic.url}" alt="${item}" />
+		</div>
+		<div class="txt">
+			<span class="txtitem"><em>作者：</em>${item.author}</span>
+			<span class="txtitem"><em>语言：</em>${item.lang}</span>
+			<span class="txtitem"><em>适合人群：</em>${item.level}</span>
+			<span class="txtitem"><em>添加人：</em><a href="/user/${item.added_by}">${dm.User.objects.get(id = item.added_by)}</a></span>
+			<span class="txtitem"><em>添加时间：</em>${item.added_time}</span>
+			<span class="txtitem"><em>出版时间：</em>${item.publish_time}</span>
+			<span class="txtitem"><em>出版社：</em>${item.publishers}</span>
+			%if item.pdf:
+			<span class="txtitem"><em>PDF版本：</em><a href="${item.pdf}">${item.pdf}</a></span>
+			%endif
+			<a class="notebtn" href="/addposts/?book=${item.id}">对这本书作笔记</a>
+		</div>
+	</div>
+
+	<div class="box">
+		<h2 class="bt">
+			<span class="tit">相关笔记…</span>
+		</h2>
+		<div class="bc">
+			%if len(book_posts) != 0:
+			<ul class="list">
+				%for posts in book_posts:
+					<li><a href="/posts/${posts.id}">${posts}</a></li>
+				%endfor
+			</ul>
+			%else:
+			<div class="tips">
+				还没有这么本书相关的笔记
+			</div>
+			%endif
+		</div>
+	</div>
+	<div class="box">
+		<h2 class="bt">
+			<span class="tit">获得此书…</span>
+		</h2>
+		<div class="bc">
+			%if len(saleinfo) != 0:
+			<ul class="list saleinfo">
+				%for info in saleinfo:
+				<li>
+					<h4 class="subject"><a href="${info.buyurl}">${info}</a></h4>
+					<div class="salecont">${info.saleinfo}</div>
+				</li>
+				%endfor
+			</ul>		
+			%else:
+			<div class="tips">
+				sdasdad
+			</div>
+			%endif
+		</div>
+	</div>
+</div>
+<div class="side">
+	<div class="box" style="margin-top:-10px;">
+		<h2 class="bt">
+			<span class="tit">正在读这本书的人…</span>
+		</h2>
+		<div class="bc">
+			<ul class="list userlist">
+				%for user in users:
+				<li>
+					<a href="/user/${user.id}"><img src="${user.upic.url}" alt="${user}" /></a>
+					<span><a href="/user/${user.id}">${user}</a></span>
+				</li>
+				%endfor
+			</ul>		
+		</div>
+		%if len(dm.U_B_Ship.objects.filter(book = item.id)) > 16:
+			<span class="extend">
+				<a href="#">查看所有读者&rsaquo;&rsaquo;</a>
+			</span>
+		%endif
+	</div>
+</div>
+</%def>

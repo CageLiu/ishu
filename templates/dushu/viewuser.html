@@ -1,0 +1,74 @@
+##-*-coding:utf-8-*-
+<%inherit file="base.html" />
+
+<%def name="title()">
+	i-Shu | ${item.nickname}的帐户
+</%def>
+
+<%def name="outfile()"></%def>
+
+
+<%def name="main()">
+<%
+	from idushu.apps.dushu import models as dm
+	added_book = dm.Book.objects.filter(added_by = item.id)
+	user_posts = dm.Posts.objects.filter(author = item.id)
+	user_reply = dm.Reply.objects.filter(author = item.id)
+%>
+<div class="main">
+	<!--<h2 class="crumbs">${item}</h2>-->
+	<div class="box">
+		<h2 class="bt">
+			<span class="tit">${item}的笔记</span>
+		</h2>
+		<div class="bc">
+			<ul class="list postslist">
+				<li>asd</li>
+			</ul>
+		</div>
+	</div>
+	<div class="box">
+		<h2 class="bt">
+			<span class="tit">${item}添加的书</span>
+		</h2>
+		<div class="bc">
+			<ul class="list">
+				%for book in added_book:
+				<li>${book}</li>
+				%endfor
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="side">
+	<div class="box">
+		<h2 class="bt">
+			<span class="tit">${item}添加的资料</span>
+		</h2>
+		<div class="bc">
+			<div class="userinfo">
+				<ul>
+					<li>
+					<img src="${item.upic.url}" alt="${item}" />
+					</li>
+					<li>
+					${item.email}
+					</li>
+					<li>
+					${item.city}
+					</li>
+					<li>
+					${item.reg_date}
+					</li>
+					<li>
+					${item.level}
+					</li>
+					<li>
+					${item.score}
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+</%def>

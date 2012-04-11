@@ -1,0 +1,56 @@
+##-*-coding:utf-8-*-
+<%inherit file="base.html" />
+
+<%def name="title()">
+确认注册
+</%def>
+
+<%def name="outfile()"></%def>
+
+<%def name="main()">
+	%if request.method == "GET":
+		<h2 class="crumbs">帐号激活</h2>
+		%if success:
+			<div class="activation">
+				<p>恭喜，帐号激活成功!欢迎您的加入</p>
+				<p>现在就去 <a href="/">i-Shu首页</a> 逛逛吧!</p>
+			</div>
+		%else:
+			%if user:
+				<div class="activation">
+					<p>该帐号已经激活， <a href='/login/'>直接进入 i-SHu</a></p>
+				</div>
+			%else:
+				<div class="activation">
+					<p>该帐号不存在，使用其他帐号 <a href='/login/'>登录</a> 或 <a href="/reg/">重新注册新帐号</a></p>
+				</div>
+			%endif
+		%endif
+	%elif request.method == "POST":
+	<div class="confirm_info">
+		%if args:
+		<h2 class="crumbs">查收确认信</h2>
+		<div style="padding-top:30px">i-Shu 已将一封激活帐号的邮件发送到您的注册邮箱:<span class="mail" id="confrimail">${args['email']}</span>,您需要点击邮件中的确认链接来完成注册</div>
+		%elif user:
+		<div style="padding-top:30px;">
+			亲，您的帐号还未激活，请先到您的邮箱：<span class="mail" id="confrimail">${user.email}</span>,点击邮件中的链接进行激活
+		</div>
+		%endif
+		<div class="box confirm_tips">
+			<h2 class="bt">
+				<span class="tit">没收到确认信？</span>
+			</h2>
+			<div class="bc">
+				<ol>
+					<li>检查一下上面Email地址是否正确，错了就重新注册一次吧:)</li>
+					<li>看看是否在邮箱的垃圾箱里</li>
+					<li>
+						稍等几分钟，若仍旧没收到确认信，让 i-Shu <a href="javascript:;" hidefocus="true" id="sendconfrimail">重发一封</a>
+						<span id="emailtips">&nbsp;</span>
+					</li>
+				</ol>
+			</div>
+		</div>
+	</div>
+	%endif
+</%def>

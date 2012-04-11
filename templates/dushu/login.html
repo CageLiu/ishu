@@ -1,0 +1,40 @@
+##-*-coding:utf-8-*-
+<%inherit file="base.html" />
+
+<%def name="title()">
+	登录 i-Shu
+</%def>
+
+<%def name="outfile()"></%def>
+
+<%def name="main()">
+<div class="main">
+	<h2 class="crumbs">登录 i-Shu</h2>
+	<form action="" method="post">
+		<div class="form login_form">
+			<div class="item">
+				<label>Email：</label>
+				<input class="txt w250" type="text" name="email" />
+				%if etips:
+				<span class="tips error">${etips}</span>
+				%endif
+			</div>
+			<div class="item">
+				<label>密码：</label>
+				<input class="txt w250" type="password" name="pwd" />
+				%if ptips:
+				<span class="tips error">${ptips}</span>
+				%endif
+			</div>
+			<div class="item">
+				<input class="btn" type="submit" value="登录"/>
+			</div>
+		</div>
+	</form>
+</div>
+<div class="side">
+	<div class="go_reg">
+		还没有 i-Shu 帐号？<a href="/reg/" hidefocus="true">马上注册</a>
+	</div>
+</div>
+</%def>

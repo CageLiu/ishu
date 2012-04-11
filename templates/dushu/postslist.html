@@ -1,0 +1,96 @@
+##-*-coding:utf-8-*-
+<%inherit file="base.html" />
+
+<%def name="title()">
+i-Shu | 笔记列表
+</%def>
+
+<%def name="outfile()"></%def>
+
+<%def name="main()">
+<%
+	from idushu.apps.dushu import models as dm
+%>
+<div class="main">
+	<div class="crumbs">
+		<h2>
+			<span>i-Shu 笔记库</span>
+			<a class="addbtn" href="/addposts/">写新笔记</a>
+		</h2>
+		%if pages > 1:
+		<div class="pages">
+			<a
+				%if not prevpage:
+				class="disabled" href="javascript:;">
+				%else:
+				href="/${models}/?page=${prevpage}">
+				%endif
+				&lsaquo;&lsaquo;上一页
+			</a>
+			<strong>${page}</strong>  <span> / ${pages}</span>
+			<a
+				%if not nextpage:
+				class="disabled" href="javascript:;">
+				%else:
+				href="/${models}/?page=${nextpage}">
+				%endif
+				下一页&rsaquo;&rsaquo;
+			</a>
+			<form action="" class="j_p_form">
+				<input class="txt" type="text" name="page" />
+				<input class="form_btn" type="submit" value="Go" />
+				<span class="btn">Go</span>
+			</form>
+		</div>
+		%endif
+	</div>
+	<ul class="list postslist">
+		%for item in allitem:
+		<li>
+		<a href="/posts/${item.id}/?page=${page}">${item}</a>
+			%if item.book != 0:
+			<a class="forbook" href="/book/${item.book}" title="For ${dm.Book.objects.get(id = item.book)}">
+				for book
+			</a>
+			%endif
+			<span class="info">
+				<em>${item.time} By</em>
+				<a href="/user/${item.author}">${dm.User.objects.get(id = item.author)}</a>
+			</span>
+		</li>
+		%endfor
+	</ul>
+		%if pages > 1:
+		<div class="pages">
+			<a
+				%if not prevpage:
+				class="disabled" href="javascript:;">
+				%else:
+				href="/${models}/?page=${prevpage}">
+				%endif
+				&lsaquo;&lsaquo;上一页
+			</a>
+			<strong>${page}</strong>  <span> / ${pages}</span>
+			<a
+				%if not nextpage:
+				class="disabled" href="javascript:;">
+				%else:
+				href="/${models}/?page=${nextpage}">
+				%endif
+				下一页&rsaquo;&rsaquo;
+			</a>
+			<form action="" class="j_p_form">
+				<input class="txt" type="text" name="page" />
+				<input class="form_btn" type="submit" value="Go" />
+				<span class="btn">Go</span>
+			</form>
+		</div>
+		%endif
+</div>
+
+<!--
+   -<div class="side">
+   -    side
+   -</div>
+   -->
+</%def>

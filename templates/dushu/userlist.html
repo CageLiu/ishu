@@ -1,0 +1,81 @@
+##-*-coding:utf-8-*-
+<%inherit file="base.html" />
+
+<%def name="title()">
+	i-Shu | 用户列表
+</%def>
+
+<%def name="outfile()"></%def>
+
+<%def name="main()">
+<div class="member">
+	<div class="crumbs">
+		<h2>
+			<span>他们都 i-Shu</span>
+		</h2>
+		%if pages > 1:
+		<div class="pages">
+			<a
+				%if not prevpage:
+				class="disabled" href="javascript:;">
+				%else:
+				href="/${models}/?page=${prevpage}">
+				%endif
+				&lsaquo;&lsaquo;上一页
+			</a>
+			<strong>${page}</strong>  <span> / ${pages}</span>
+			<a
+				%if not nextpage:
+				class="disabled" href="javascript:;">
+				%else:
+				href="/${models}/?page=${nextpage}">
+				%endif
+				下一页&rsaquo;&rsaquo;
+			</a>
+			<form action="" class="j_p_form">
+				<input class="txt" type="text" name="page" />
+				<input class="form_btn" type="submit" value="Go" />
+				<span class="btn">Go</span>
+			</form>
+		</div>
+		%endif
+	</div>
+	<ul class="list userlist">
+	%for item in allitem:
+		%if item.valid:
+		<li>
+			<a href="/user/${item.id}"><img src="${item.upic.url}" alt="${item}" /></a>
+			<span><a href="/user/${item.id}">${item}</a></span>
+		</li>
+		%endif
+	%endfor
+	</ul>
+
+	%if pages > 1:
+	<div class="pages">
+		<a
+			%if not prevpage:
+			class="disabled" href="javascript:;">
+			%else:
+			href="/${models}/?page=${prevpage}">
+			%endif
+			&lsaquo;&lsaquo;上一页
+		</a>
+		<strong>${page}</strong>  <span>/ ${pages}</span>
+		<a
+			%if not nextpage:
+			class="disabled" href="javascript:;">
+			%else:
+			href="/${models}/?page=${nextpage}">
+			%endif
+			下一页&rsaquo;&rsaquo;
+		</a>
+		<form action="" class="j_p_form">
+			<input class="txt" type="text" name="page" />
+			<input class="form_btn" type="submit" value="Go" />
+			<span class="btn">Go</span>
+		</form>
+	</div>
+	%endif
+</div>
+</%def>

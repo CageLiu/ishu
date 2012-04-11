@@ -1,0 +1,32 @@
+##-*-coding:utf-8-*-
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>用户注册</title>
+		<link type="text/css" rel="stylesheet" href="/static/css/imgselect.css" />
+		<script type="text/javascript" src="/static/js/jquery.js"></script>
+		<script type="text/javascript" src="/static/js/imgselect.js"></script>
+		<script type="text/javascript" src="/static/js/base.js"></script>
+	</head>
+
+	<body>
+		<form action="" method="post" enctype="multipart/form-data">
+			username:<input type="text" name="usm" /><br/>
+			password:<input type="password" name="pwd" /><br/>
+			rename:<input type="text" name="rename" /><br/>
+			sex:<p>
+				<select id="sex" name="sex"></select>
+				<script type="text/javascript">
+					iDuShu.createOptions('sex',iDuShu.sex);
+				</script>
+			</p>
+			job:<input type="text" name="job"/><br/>
+			city:<input type="text" name="city"/><br/>
+			email:<input type="text" name="email"/><br/>
+			qq:<input type="text" name="qq"/><br/>
+			pic:<input type="file" name="upic" /><br/>
+			<input type="submit" value="register" />
+		</form>
+	</body>
+</html>

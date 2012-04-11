@@ -1,0 +1,92 @@
+##-*-coding:utf-8-*-
+<%inherit file="base.html" />
+
+<%def name="title()">
+	iDu index
+</%def>
+
+<%def name="outfile()"></%def>
+
+<%def name="main()">
+<%
+	from idushu.apps.dushu import models as dm
+%>
+<div class="main">
+	<div class="box">
+		<h2 class="bt">
+			<span class="tit">新书进站 Top10</span>
+		</h2>
+		<div class="bc">
+			<ol class="list booklist hr_layout clearfix">
+				%for book in bookTopTen:
+				<li>
+					<div class="media clearfix">
+						<div class="pic"><a href="/book/${book.id}"><img src="${book.bpic.url}" alt="${book}" /></a></div>
+						<div class="txt">
+							<h3><a href="/book/${book.id}">${book}</a></h3>
+							<span class="txtitem"><em>作者：</em>${book.author}</span>
+							<span class="txtitem"><em>语言：</em>${book.lang}</span>
+							<span class="txtitem"><em>类别：</em>${book.assort}</span>
+							<span class="txtitem"><em>适合人群：</em>${book.level}</span>
+							<span class="txtitem"><em>添加人：</em><a href="/user/${book.added_by}">${getpro('user',book.added_by)}</a></span>
+						</div>
+					</div>
+				</li>
+				%endfor
+			</ol>
+		</div>
+		<span class="extend">
+			<a href="/book/">更多&rsaquo;&rsaquo;</a>
+		</span>
+	</div>
+
+	
+	<div class="box">
+		<h2 class="bt">
+			<span class="tit">最新用户…</span>
+		</h2>
+		<div class="bc">
+			<ol class="list userlist">
+				%for user in allUser[:20]:
+				<li>
+					<a href="/user/${user.id}"><img src="${user.upic.url}" alt="${user}" /></a>
+					<span><a href="/user/${user.id}">${user}</a></span>
+				</li>
+				%endfor
+			</ol>
+		</div>
+		<span class="extend">
+			<a href="/user/">更多&rsaquo;&rsaquo;</a>
+		</span>
+	</div>
+</div>
+<div class="side">
+
+	<div class="box">
+		<h2 class="bt">
+			<span class="tit">最新笔记 Top10</span>
+		</h2>
+		<div class="bc">
+			<ol class="list postslist">
+				%for posts in postsTopTen:
+				<li>
+					<a href="/posts/${posts.id}">${posts}</a>
+					%if posts.book != 0:
+					<a class="forbook" href="/book/${posts.book}" title="For ${dm.Book.objects.get(id = posts.book)}">
+						for book
+					</a>
+					%endif
+					<span class="info">
+						<em>${posts.time} By</em>
+						<a href="/user/${posts.author}">${getpro('user',posts.author)}</a>
+					</span>
+				</li>
+				%endfor
+			</ol>
+		</div>
+		<span class="extend">
+			<a href="/posts/">更多&rsaquo;&rsaquo;</a>
+		</span>
+	</div>
+</div>
+</%def>

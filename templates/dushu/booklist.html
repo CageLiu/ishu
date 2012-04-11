@@ -1,0 +1,100 @@
+##-*-coding:utf-8-*-
+<%inherit file="base.html" />
+
+<%def name="title()">
+	i-Shu | 书列表
+</%def>
+
+<%def name="outfile()"></%def>
+
+<%def name="main()">
+<%
+	from idushu.apps.dushu import models as dm
+%>
+<div class="main">
+	<div class="crumbs">
+		<h2>
+			<span>i-Shu 图书馆</span>
+			<a class="addbtn" href="/addbook/">添加新书</a>
+		</h2>
+		%if pages > 1:
+		<div class="pages">
+			<a
+				%if not prevpage:
+				class="disabled" href="javascript:;">
+				%else:
+				href="/${models}/?page=${prevpage}">
+				%endif
+				&lsaquo;&lsaquo;上一页
+			</a>
+			<strong>${page}</strong>  <span> / ${pages}</span>
+			<a
+				%if not nextpage:
+				class="disabled" href="javascript:;">
+				%else:
+				href="/${models}/?page=${nextpage}">
+				%endif
+				下一页&rsaquo;&rsaquo;
+			</a>
+			<form action="" class="j_p_form">
+				<input class="txt" type="text" name="page" />
+				<input class="form_btn" type="submit" value="Go" />
+				<span class="btn">Go</span>
+			</form>
+		</div>
+		%endif
+	</div>
+	<ul class="list booklist">
+	%for item in allitem:
+		<li>
+			<div class="media clearfix">
+				<div class="pic">
+					<a href="/book/${item.id}/?page=${page}"><img src="${item.bpic.url}" alt="${item}" /></a>
+				</div>
+				<div class="txt">
+					<h3><a href="/book/${item.id}/?page=${page}">${item}</a></h3>
+					<span class="txtitem"><em>作者：</em>${item.author}</span>
+					<span class="txtitem"><em>语言：</em>${item.lang}</span>
+					<span class="txtitem"><em>类别：</em>${item.assort}</span>
+					<span class="txtitem"><em>适合人群：</em>${item.level}</span>
+					<span class="txtitem"><em>添加人：</em><a href="/user/${item.added_by}">${dm.User.objects.get(id = item.added_by)}</a></span>
+					<a class="notebtn" href="/addposts/?book=${item.id}">对这本书作笔记</a>
+				</div>
+			</div>
+		</li>
+	%endfor
+	</ul>
+
+	%if pages > 1:
+	<div class="pages">
+		<a
+			%if not prevpage:
+			class="disabled" href="javascript:;">
+			%else:
+			href="/${models}/?page=${prevpage}">
+			%endif
+			&lsaquo;&lsaquo;上一页
+		</a>
+		<strong>${page}</strong>  <span>/ ${pages}</span>
+		<a
+			%if not nextpage:
+			class="disabled" href="javascript:;">
+			%else:
+			href="/${models}/?page=${nextpage}">
+			%endif
+			下一页&rsaquo;&rsaquo;
+		</a>
+		<form action="" class="j_p_form">
+			<input class="txt" type="text" name="page" />
+			<input class="form_btn" type="submit" value="Go" />
+			<span class="btn">Go</span>
+		</form>
+	</div>
+	%endif
+</div>
+<!--
+   -<div class="side">
+   -    side
+   -</div>
+   -->
+</%def>

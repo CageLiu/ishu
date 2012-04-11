@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>i-Shu(爱书)网注册确认邮件</title>
+		<style type="text/css">
+			*{margin:0;padding:0}
+			a{color:#3b5998;text-decoration:underline;}
+		</style>
+	</head>
+
+	<body>
+		<p>亲爱的 {{args.nickname}}:</p>
+
+		<p>
+			欢迎加入 i-Shu(爱书网)!
+		</p>
+
+		<p>
+			请点击下面的链接来完成注册：
+		</p>
+
+		<p>
+			<a href="http://ldev:8000/reg/?confirmation={{vcode}}">http://ldev:8000/reg/?confirmation={{vcode}}</a>
+		</p>
+
+		<p>
+			若以上链接不能点击，请将以上地址复制到浏览器地址栏进行访问。
+		</p>
+		<p>
+			i-Shu(爱书网)
+		</p>
+		<p>(此邮件系系统自动发出,请勿回复。)</p>
+	</body>
+</html>

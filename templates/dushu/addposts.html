@@ -1,0 +1,64 @@
+##-*-coding:utf-8 -*-
+<%inherit file="base.html" />
+
+<%def name="title()">
+	i-Shu | 开始新的笔记
+</%def>
+
+<%def name="outfile()">
+	<script type="text/javascript" src="http://ke.i-shu.com/kindeditor-min.js"></script>
+	<script type="text/javascript" src="http://ke.i-shu.com/keplugin/public/jquery.syntax.js"></script>
+	<script type="text/javascript" src="http://ke.i-shu.com/keplugin/public/jquery.syntax.cache.js"></script>
+</%def>
+
+<%def name="main()">
+<h2 class="crumbs">开始做笔记</h2>
+<div class="form addposts">
+	<form action="" method="post" enctype="multipart/form-data" id="addposts">
+		<div class="item">
+			<label>标题：</label>
+			<input class="txt w300" type="text" name="subject" id="postssubject" />
+			%if subjecterror:
+			<span class="tips error">${subjecterror}</span>
+			%else:
+			<span class="tips">笔记名称</span>
+			%endif
+		</div>
+		<div class="item">
+			<label>书名：</label>
+			%if book:
+				<input class="txt w300" type="text" value="${book}" readonly />
+				<input type="hidden" name="book" id="bookid" value="${book.id}" />
+				<a href="/book/">去图书馆重新选择</a>
+			%else:
+				<input class="txt w300" type="text" id="bookname" />
+				<input type="hidden" name="book" id="bookid" value="0" />
+				<a href="/book/">去图书馆选择图书</a>
+				<span class="tips">选择该笔记属于哪本书(可选)</span>
+			%endif
+		</div>
+		<div class="item">
+			<label>内容：</label>
+			<textarea class="tarea" name="content" id="id_cont"></textarea>
+			%if contenterror:
+			<span class="tips error">${contenterror}</span>
+			%else:
+			<span class="tips">笔记内容</span>
+			%endif
+		</div>
+		<div class="item">
+			<input type="submit" class="btn" value="发表" />
+		</div>
+	</form>
+</div>
+<script>
+var editor;
+	KindEditor.ready(function(K) {
+	editor = K.create(document.getElementById("id_cont"), {
+		resizeType : 1,
+		cssPath : ['http://ke.i-shu.com/plugins/code/prettify.css'],
+		allowFileManager : false
+	});
+});
+</script>
+</%def>

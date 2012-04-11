@@ -1,0 +1,136 @@
+##-*-coding:utf-8-*-
+<%inherit file="base.html" />
+
+<%def name="title()">
+${item} | i-Shu
+</%def>
+
+<%def name="outfile()">
+	<script type="text/javascript" src="http://ke.i-shu.com/kindeditor-min.js"></script>
+	<script type="text/javascript" src="http://ke.i-shu.com/keplugin/public/jquery.syntax.js"></script>
+	<script type="text/javascript" src="http://ke.i-shu.com/keplugin/public/jquery.syntax.cache.js"></script>
+</%def>
+
+<%def name="main()">
+<%
+	from idushu.apps.dushu import models as dm
+	thisAuthor = dm.User.objects.get(id = item.author)
+%>
+<div class="main">
+	<h1 class="maintitle">${item}</h1>
+	<ul class="posts">
+		<li class="cont_item">
+			<div class="author">
+				<p><a href="/user/${item.author}"><img src="${thisAuthor.upic.url}" alt="" /></a></p>
+				<p><a href="/user/${item.author}">${thisAuthor}</a></p>
+			</div>
+			<div class="pct">
+				<div class="toolbar">
+					<span class="postime">
+						发表于 ${item.time}&nbsp;&nbsp;&nbsp;&nbsp;
+						##%if item.author == cUser.id:
+						<!--<a href="#">编辑</a>-->
+						##%endif
+					</span>
+					<span class="floor">1楼</span>
+				</div>
+				<div class="cont">
+					${item.content}
+				</div>
+			</div>
+		</li>
+
+		%for i in range(len(item.replys)):
+		<li class="cont_item">
+			<div class="author">
+				<p><a href="/user/${item.replys[i].author}"><img src="${dm.User.objects.get(id = item.replys[i].author).upic.url}" alt="" /></a></p>
+				<p><a href="/user/${item.replys[i].author}">${dm.User.objects.get(id = item.replys[i].author)}</a></p>
+			</div>
+			<div class="pct">
+				<div class="toolbar">
+					<span class="postime">
+						发表于 ${item.replys[i].time}&nbsp;&nbsp;&nbsp;&nbsp;
+						##%if item.replys[i].author == cUser.id:
+						<!--<a href="#">编辑</a> -->
+						##%endif
+						%if cUser and item.replys[i].author != cUser.id:
+						<a href="javascript:;" rel="${i+2}楼 ${dm.User.objects.get(id = item.replys[i].author)}" class="quotebtn">回复</a>
+						%endif
+					</span>
+					<span class="floor">${i+2}楼</span>
+				</div>
+				<div class="cont">
+					${item.replys[i]}
+				</div>
+			</div>
+		</li>
+		%endfor
+	</ul>
+	<div class="replybox" id="replybox">
+		%if cUser:
+		<form action="/addreply/" method="post">
+			<div class="form replyform">
+				<textarea id="reply_cont" name="content"></textarea>
+				<span class="tips" style="display:block;margin-left:0;margin-top:8px"></span>
+				<input type="hidden" id="replyquote" name="quote" value="0" />
+				<input type="hidden" name="posts" value="${args}" />
+				<input class="btn" type="submit" value="提交" id="replybtn" />
+			</div>
+		</form>
+		%else:
+			no login
+		%endif
+	</div>
+</div>
+
+<!--
+<div class="side">
+	<div class="box">
+		##%if item.book:
+			<h2 class="bt">
+				<span class="tit">书</span>
+			</h2>
+			<div class="bc" style="background:gray">
+				asd
+			</div>
+		##%else:
+			<h2 class="bt">
+				<span class="tit">没有书</span>
+			</h2>
+			<div class="bc" style="background:gray">
+				asd
+			</div>
+		##%endif
+	</div>
+</div>
+-->
+
+<script type="text/javascript">
+	var editor;
+	KindEditor.ready(function(K) {
+		editor = K.create(document.getElementById("reply_cont"), {
+			resizeType : 1,
+			allowPreviewEmoticons : false,
+			allowImageUpload : false,
+			items : [
+				'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+				'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+				'insertunorderedlist', '|', 'emoticons', 'link','code']
+		});
+	});
+	$(document).ready(function(){
+		jQuery.syntax();		
+		$(".quotebtn").click(function(){
+			$(window).scrollTop($("#replybox").offset().top);
+			editor.html("<span style='color:#888;font-size:14px;'>@" + $(this).attr("rel") + "</span>\n<br/>");	
+		});
+		var reply = $("#replybtn");
+		reply.click(function(){
+			if(editor.count() == 0){
+				$(this).siblings("span.tips").addClass("error").text("内容不能为空！");
+				return false;
+			}		
+		});
+	});
+</script>
+</%def>
