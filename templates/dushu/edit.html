@@ -1,0 +1,68 @@
+##-*-coding:utf-8-*-
+<%inherit file="base.html" />
+
+<%def name="title()">
+	i-Shu |
+</%def>
+
+<%def name="outfile()">
+	<script type="text/javascript" src="http://ke.i-shu.com/kindeditor-min.js"></script>
+	<script type="text/javascript" src="http://ke.i-shu.com/keplugin/public/jquery.syntax.js"></script>
+	<script type="text/javascript" src="http://ke.i-shu.com/keplugin/public/jquery.syntax.cache.js"></script>
+</%def>
+
+<%def name="main()">
+%if not error:
+<h2 class="crumbs">
+	%if subject:
+		编辑 《${subject}》
+	%else:
+		编辑回复
+	%endif
+</h2>
+
+<form action="" method="post">
+	<div class="form edit">
+		%if subject:
+		<div class="item">
+			<label>标题：</label>
+			<input type="text" class="txt w300" value="${subject}" name="subject" />
+			<span class="tips"></span>
+		</div>
+		%endif
+		<div class="item">
+			<label>内容：</label>
+			<textarea class="tarea" id="id_cont" name="content">${arc.content}</textarea>
+			<span class="tips"></span>
+		</div>
+		<div class="item">
+			<input type="submit" class="btn" value="保存" id="updatebtn" />
+		</div>
+	</div>
+</form>
+<script>
+var editor;
+	KindEditor.ready(function(K) {
+	editor = K.create(document.getElementById("id_cont"), {
+		resizeType : 1,
+		cssPath : ['http://ke.i-shu.com/plugins/code/prettify.css'],
+		allowFileManager : false
+	});
+});
+$("#updatebtn").click(function(){
+	var arcsubject = $("input[name='subject']");
+	var arccontent = $("#id_cont");
+	if(arcsubject && arcsubject.val().length == 0){
+		arcsubject.siblings("span.tips").addClass("error").text("标题不能为空");
+		return false;
+	}
+	if(editor.count('text') == 0){
+		arccontent.siblings("span.tips").addClass("error").text("内容不能为空");
+		return false;
+	}
+});
+</script>
+%else:
+${error}
+%endif
+</%def>

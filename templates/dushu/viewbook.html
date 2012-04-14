@@ -55,9 +55,15 @@
 		</h2>
 		<div class="bc">
 			%if len(book_posts) != 0:
-			<ul class="list">
+			<ul class="list postslist">
 				%for posts in book_posts:
-					<li><a href="/posts/${posts.id}">${posts}</a></li>
+				<li class="xk">
+					<a class="title" href="/posts/${posts.id}/?prev_page=${request.get_full_path()}">${posts}</a>
+					<span class="info">
+						<em>${posts.time} By</em>
+						<a href="/user/${posts.author}">${dm.User.objects.get(id = posts.author)}</a>
+					</span>
+				</li>
 				%endfor
 			</ul>
 			%else:
@@ -83,7 +89,7 @@
 			</ul>		
 			%else:
 			<div class="tips">
-				sdasdad
+				暂无相关信息
 			</div>
 			%endif
 		</div>
@@ -96,12 +102,18 @@
 		</h2>
 		<div class="bc">
 			<ul class="list userlist">
-				%for user in users:
-				<li>
-					<a href="/user/${user.id}"><img src="${user.upic.url}" alt="${user}" /></a>
-					<span><a href="/user/${user.id}">${user}</a></span>
-				</li>
-				%endfor
+				%if len(users) != 0:
+					%for user in users:
+					<li>
+						<a href="/user/${user.id}"><img src="${user.upic.url}" alt="${user}" /></a>
+						<span><a href="/user/${user.id}">${user}</a></span>
+					</li>
+					%endfor
+				%else:
+					<li style="width:100%;">
+						还没有人在读这本书
+					</li>
+				%endif
 			</ul>		
 		</div>
 		%if len(dm.U_B_Ship.objects.filter(book = item.id)) > 16:

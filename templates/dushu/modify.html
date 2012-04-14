@@ -1,0 +1,112 @@
+##-*-coding:utf-8-*-
+<%inherit file="base.html" />
+
+<%def name="title()">
+	i-Shu | 修改资料
+</%def>
+
+<%def name="outfile()">
+	<script type="text/javascript" src="/static/js/area.js"></script>
+</%def>
+
+<%def name="main()">
+<div class="col">
+	<h2 class="crumbs">修改资料</h2>
+	<form action="/modify/?dtype=info" method="post">
+		<div class="form modify">
+			<div class="item">
+				<label>Email：</label>
+				<input class="txt readonly" type="text" readonly value="${cUser.email}"/>
+			</div>
+			<div class="item">
+				<label>昵称：</label>
+				<input class="txt" type="text" name="nickname" value="${cUser.nickname}" />
+			</div>
+			<div class="item">
+				<label>城市：</label>
+				<input class="txt" type="text" name="city" value="${cUser.city}" id="perNative" />
+			</div>
+			<div class="item">
+				<input class="btn" type="submit" value="保存修改" />
+			</div>
+		</div>
+	</form>
+</div>
+<div class="col">
+	<h2 class="crumbs">修改密码</h2>
+	<form action="/modify/?dtype=pwd" method="post">
+		<div class="form modify">
+			<div class="item">
+				<label>旧密码：</label>
+				<input class="txt" type="password" name="oldpwd"/>
+				%if request.GET.get("error"):
+				<span class="tips error">${request.GET['error']}</span>
+				%endif
+			</div>
+			<div class="item">
+				<label>新密码：</label>
+				<input class="txt" type="password" name="newpwd"/>
+				<span class="tips"></span>
+			</div>
+			<div class="item">
+				<label>确认新密码：</label>
+				<input class="txt" type="password" name="newpwd"/>
+				<span class="tips"></span>
+			</div>
+			<div class="item">
+				<input class="btn" type="submit" value="修改密码" id="changepwd" />
+			</div>
+		</div>
+		<script type="text/javascript">
+			pwd = $("input[name='newpwd']");
+			var pwdvalid = false;
+			pwd.blur(function(){
+				if($(this).val().length == 0){
+					$(this).siblings("span.tips").addClass("error").removeClass("correct").text("不能为空");
+					pwdvalid = false;
+				}else if($(this).val().length < 6){
+					$(this).siblings("span.tips").addClass("error").removeClass("correct").text("密码太短");
+					pwdvalid = false;
+				}else if($(this).val().length > 18){
+					$(this).siblings("span.tips").addClass("error").removeClass("correct").text("密码过长");
+					pwdvalid = false;
+				}
+				else{
+					$(this).siblings("span.tips").addClass("correct").removeClass("error").text("√");
+					pwdvalid = true;
+				}
+			});
+			$("#changepwd").click(function(){
+				if(pwd.eq(0).val() !== pwd.eq(1).val()){
+					pwd.eq(1).siblings("span.tips").addClass("error").removeClass("correct").text("不能确认");
+					return false;
+				}else if(!pwdvalid){
+					return false;
+				}
+			});
+		</script>
+	</form>
+</div>
+<div class="col">
+	<h2 class="crumbs">修改头像</h2>
+	<form action="/modify/?dtype=face" method="post">
+		<div class="form modify">
+			<div class="item">
+				<label>Email：</label>
+				<input class="txt" type="text" readonly value="${cUser.email}" />
+			</div>
+			<div class="item">
+				<label>昵称：</label>
+				<input class="txt" type="text" name="nickname" value="${cUser.nickname}" />
+			</div>
+			<div class="item">
+				<label>城市：</label>
+				<input class="txt" type="text" name="city" value="${cUser.city}" id="perNative" />
+			</div>
+			<div class="item">
+				<input class="btn" type="submit" value="保存头像" />
+			</div>
+		</div>
+	</form>
+</div>
+</%def>

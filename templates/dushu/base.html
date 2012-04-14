@@ -54,7 +54,7 @@
 					<ul class="user">
 						%if cUser:
 						<li><a href="/user/${cUser.id}">${cUser} 的帐号</a></li>
-						<li><a href="/logout/">退出</a></li>
+						<li><a href="/logout/?ref_page=${request.get_full_path()}">退出</a></li>
 						%else:
 							<li><a href="/login/?ref_page=${request.get_full_path()}">登录</a></li>
 							<li><a href="/reg/">注册</a></li>

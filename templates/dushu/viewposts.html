@@ -15,9 +15,22 @@ ${item} | i-Shu
 <%
 	from idushu.apps.dushu import models as dm
 	thisAuthor = dm.User.objects.get(id = item.author)
+	try:
+		thisBook = dm.Book.objects.get(id = item.book)
+	except dm.Book.DoesNotExist:
+		pass
+	page = request.GET.get("page",0)
+	prev_page = request.GET.get("prev_page",0)
 %>
+<h1 class="maintitle">
+	${item}
+	%if page:
+		<a class="back" href="/posts/?page=${page}">&lsaquo;&lsaquo;返回笔记库</a>
+	%elif prev_page:
+		<a class="back" href="/book/?page=${prev_page}">&lsaquo;&lsaquo;返回图书页</a>
+	%endif
+</h1>
 <div class="main">
-	<h1 class="maintitle">${item}</h1>
 	<ul class="posts">
 		<li class="cont_item">
 			<div class="author">
@@ -28,9 +41,9 @@ ${item} | i-Shu
 				<div class="toolbar">
 					<span class="postime">
 						发表于 ${item.time}&nbsp;&nbsp;&nbsp;&nbsp;
-						##%if item.author == cUser.id:
-						<!--<a href="#">编辑</a>-->
-						##%endif
+						%if cUser and item.author == cUser.id:
+						<a href="/edit/posts/?pid=${item.id}">编辑</a>
+						%endif
 					</span>
 					<span class="floor">1楼</span>
 				</div>
@@ -50,9 +63,9 @@ ${item} | i-Shu
 				<div class="toolbar">
 					<span class="postime">
 						发表于 ${item.replys[i].time}&nbsp;&nbsp;&nbsp;&nbsp;
-						##%if item.replys[i].author == cUser.id:
-						<!--<a href="#">编辑</a> -->
-						##%endif
+						%if item.replys[i].author == cUser.id:
+						<a href="/edit/reply/?pid=${item.replys[i].id}">编辑</a>
+						%endif
 						%if cUser and item.replys[i].author != cUser.id:
 						<a href="javascript:;" rel="${i+2}楼 ${dm.User.objects.get(id = item.replys[i].author)}" class="quotebtn">回复</a>
 						%endif
@@ -78,32 +91,47 @@ ${item} | i-Shu
 			</div>
 		</form>
 		%else:
-			no login
+			<div class="nologin">
+				<div>
+					您需要登录后才可以参与讨论
+					<a href="/login/?ref_page=${request.get_full_path()}">登录</a> | 
+					<a href="/reg/">注册</a>
+				</div>
+			</div>
 		%endif
 	</div>
 </div>
 
-<!--
 <div class="side">
 	<div class="box">
-		##%if item.book:
+		%if item.book:
 			<h2 class="bt">
-				<span class="tit">书</span>
+				<a class="book" href="/book/${thisBook.id}">${thisBook}</a>
 			</h2>
-			<div class="bc" style="background:gray">
-				asd
+			<div class="bc">
+				<div class="media bookmedia clearfix">
+					<div class="pic">
+						<a class="book" href="/book/${thisBook.id}"><img src="${thisBook.bpic.url}" alt="${thisBook}" /></a>
+					</div>
+					<div class="txt clear">
+						<span class="txtitem"><em>作者：</em>${thisBook.author}</span>
+						<span class="txtitem"><em>语言：</em>${thisBook.lang}</span>
+						<span class="txtitem"><em>适合人群：</em>${thisBook.level}</span>
+						<span class="txtitem"><em>添加人：</em><a href="/user/${thisBook.added_by}">${dm.User.objects.get(id = thisBook.added_by)}</a></span>
+						<span class="txtitem"><em>添加时间：</em>${thisBook.added_time}</span>
+						<span class="txtitem"><em>出版时间：</em>${thisBook.publish_time}</span>
+						<span class="txtitem"><em>出版社：</em>${thisBook.publishers}</span>
+						%if thisBook.pdf:
+						<span class="txtitem"><em>PDF版本：</em><a href="${thisBook.pdf}">${thisBook.pdf}</a></span>
+						%endif
+					</div>
+				</div>
 			</div>
-		##%else:
-			<h2 class="bt">
-				<span class="tit">没有书</span>
-			</h2>
-			<div class="bc" style="background:gray">
-				asd
-			</div>
-		##%endif
+		%else:
+			&nbsp;
+		%endif
 	</div>
 </div>
--->
 
 <script type="text/javascript">
 	var editor;
@@ -126,7 +154,7 @@ ${item} | i-Shu
 		});
 		var reply = $("#replybtn");
 		reply.click(function(){
-			if(editor.count() == 0){
+			if(editor.count('text') == 0){
 				$(this).siblings("span.tips").addClass("error").text("内容不能为空！");
 				return false;
 			}		

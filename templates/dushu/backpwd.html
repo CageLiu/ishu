@@ -1,0 +1,55 @@
+##-*-coding:utf-8-*-
+<%inherit file="base.html" />
+
+<%def name="title()">
+	i-Shu | 找回密码
+</%def>
+
+<%def name="outfile()"></%def>
+
+<%def name="main()">
+<h2 class="crumbs">找回密码</h2>
+%if not email:
+<form action="" method="get">
+	<div class="form backpwd">
+		<div class="item">
+			<label>您的登录邮箱：</label>
+			<input type="text" class="txt w250" name="email" />
+			<input type="submit" class="btn" value="确认找回" id="backpwd"/>
+		</div>
+	</div>
+</form>
+%elif error:
+<form action="" method="get">
+	<div class="form backpwd">
+		<div class="item">
+			<label>您的登录邮箱：</label>
+			<input type="text" class="txt w250" name="email" />
+			<input type="submit" class="btn" value="确认找回" id="backpwd"/>
+		</div>
+		<div class="item">
+			<span class="tips error">${error}</span>
+		</div>
+	</div>
+</form>
+%else:
+<div class="confirm_info">
+	<div style="padding-top:30px">i-Shu 已将一封激活帐号的邮件发送到您的注册邮箱:<span class="mail" id="confrimail">${email}</span>,您需要点击邮件中的确认链接来完成注册</div>
+	<div class="box confirm_tips">
+		<h2 class="bt">
+			<span class="tit">没收到邮件？</span>
+		</h2>
+		<div class="bc">
+			<ol>
+				<li>检查一下上面Email地址是否正确，错了就重新注册一次吧:)</li>
+				<li>看看是否在邮箱的垃圾箱里</li>
+				<li>
+				稍等几分钟，若仍旧没收到确认信，让 i-Shu <a href="javascript:;" hidefocus="true" id="sendconfrimail">重发一封</a>
+				<span id="emailtips">&nbsp;</span>
+				</li>
+			</ol>
+		</div>
+	</div>
+</div>
+%endif
+</%def>

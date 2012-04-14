@@ -1,8 +1,8 @@
 import sys
 import os
 
-sys.path.append('/var/www/idushu')
-os.environ['DJANGO_SETTINGS_MODULE']='idushu.settings'
+sys.path.append('/var/www/mysite')
+os.environ['DJANGO_SETTINGS_MODULE']='mysite.settings' #项目名.settings
 
 import django.core.handlers.wsgi
 

@@ -8,7 +8,13 @@
 <%def name="outfile()"></%def>
 
 <%def name="main()">
+%if error:
+<div style="margin:100px 0;text-align:center">
+	对不起，${error}
+</div>
+%else:
 <div style="margin:100px 0;text-align:center">
 	对不起，您的权限不够! 不能进行此操作!
 </div>
+%endif
 </%def>

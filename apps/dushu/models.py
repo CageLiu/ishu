@@ -67,7 +67,7 @@ class U_M_Ship(models.Model):
 #Book models                                                                                    
 class Book(models.Model):                                                                       
     #必填
-    name            = models.CharField(max_length = 255,unique = True)                            #书名
+    name            = models.CharField(max_length = 255)                                          #书名
     lang            = models.CharField(max_length = 255)                                          #语言
     level           = models.CharField(max_length = 255)                                          #适合级别
     assort          = models.CharField(max_length = 255)                                          #分类

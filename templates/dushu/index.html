@@ -41,7 +41,42 @@
 	</div>
 
 	
+</div>
+<div class="side">
 	<div class="box">
+		<h2 class="bt">
+			<span class="tit">最新笔记 Top10</span>
+		</h2>
+		<div class="bc">
+			<ol class="list postslist block">
+				%for posts in postsTopTen:
+				<li>
+					<p class="title"><a href="/posts/${posts.id}">${posts}</a></p>
+					%if posts.book != 0:
+					<p style="margin-bottom:8px">
+						<a class="forbook" href="/book/${posts.book}"> for book </a>
+						<a class="book" href="/book/${posts.book}">${dm.Book.objects.get(id = posts.book)}</a>
+					</p>
+					%endif
+					<p>
+						<span class="info">
+							<em>${posts.time} By</em>
+							<a href="/user/${posts.author}">${getpro('user',posts.author)}</a>
+						</span>
+					</p>
+				</li>
+				%endfor
+			</ol>
+		</div>
+		<span class="extend">
+			<a href="/posts/">更多&rsaquo;&rsaquo;</a>
+		</span>
+	</div>
+</div>
+
+
+
+	<div class="box clear">
 		<h2 class="bt">
 			<span class="tit">最新用户…</span>
 		</h2>
@@ -59,34 +94,8 @@
 			<a href="/user/">更多&rsaquo;&rsaquo;</a>
 		</span>
 	</div>
-</div>
-<div class="side">
 
-	<div class="box">
-		<h2 class="bt">
-			<span class="tit">最新笔记 Top10</span>
-		</h2>
-		<div class="bc">
-			<ol class="list postslist">
-				%for posts in postsTopTen:
-				<li>
-					<a href="/posts/${posts.id}">${posts}</a>
-					%if posts.book != 0:
-					<a class="forbook" href="/book/${posts.book}" title="For ${dm.Book.objects.get(id = posts.book)}">
-						for book
-					</a>
-					%endif
-					<span class="info">
-						<em>${posts.time} By</em>
-						<a href="/user/${posts.author}">${getpro('user',posts.author)}</a>
-					</span>
-				</li>
-				%endfor
-			</ol>
-		</div>
-		<span class="extend">
-			<a href="/posts/">更多&rsaquo;&rsaquo;</a>
-		</span>
-	</div>
-</div>
+
+
+
 </%def>

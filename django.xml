@@ -5,8 +5,8 @@
   <gid>uwsgi</gid>
   <uid>uwsgi</uid>
   <processes>4</processes>
-  <pythonpath>/var/www/idushu</pythonpath>
-  <module>wsgi</module>
+  <pythonpath>/var/www/mysite</pythonpath> <!--Django应用目录-->
+  <module>wsgi</module> <!--Django应用目录下包含的wsgi.py文件名，-->
   <profiler>true</profiler>
   <memory-report>true</memory-report>
   <enable-threads>true</enable-threads>

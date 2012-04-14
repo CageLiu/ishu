@@ -13,61 +13,107 @@
 	from idushu.apps.dushu import models as dm
 	added_book = dm.Book.objects.filter(added_by = item.id)
 	user_posts = dm.Posts.objects.filter(author = item.id)
-	user_reply = dm.Reply.objects.filter(author = item.id)
+	user_reply = {}.fromkeys([i.posts for i in dm.Reply.objects.filter(author = item.id)]).keys()
+	reply_posts = [dm.Posts.objects.get(id = i) for i in user_reply]
 %>
 <div class="main">
-	<!--<h2 class="crumbs">${item}</h2>-->
 	<div class="box">
 		<h2 class="bt">
-			<span class="tit">${item}的笔记</span>
+			<span class="tit">${item} 发起的笔记</span>
 		</h2>
 		<div class="bc">
+			%if len(user_posts) != 0:
 			<ul class="list postslist">
-				<li>asd</li>
+				%for posts in user_posts:
+				<li class=xk>
+					<a class="title" href="/posts/${posts.id}">${posts}</a>
+					<span class="info">
+						${posts.time}
+					</span>
+				</li>
+				%endfor
 			</ul>
+			%else:
+				暂无记录
+			%endif
 		</div>
 	</div>
 	<div class="box">
 		<h2 class="bt">
-			<span class="tit">${item}添加的书</span>
+			<span class="tit">${item} 参与讨论的笔记</span>
 		</h2>
 		<div class="bc">
-			<ul class="list">
-				%for book in added_book:
-				<li>${book}</li>
+			%if len(reply_posts) != 0:
+			<ul class="list postslist">
+				%for p in reply_posts:
+				<li class=xk>
+				<a class="title" href="/posts/${p.id}">${p}</a>
+					<span class="info">
+						${p.time}
+					</span>
+				</li>
 				%endfor
 			</ul>
+			%else:
+				暂无记录
+			%endif
 		</div>
 	</div>
 </div>
 <div class="side">
 	<div class="box">
 		<h2 class="bt">
-			<span class="tit">${item}添加的资料</span>
+			<span class="tit">${item} 的资料</span>
 		</h2>
 		<div class="bc">
 			<div class="userinfo">
-				<ul>
+				<ul class="userinfo">
+					<li class="face">
+						%if cUser and cUser.id == item.id:
+							<a href="/modify/?dtype=face"><img src="${item.upic.url}" alt="${item}" /></a>
+							<span>
+								&lt;&minus;&minus;
+							</span>
+							<span>点击修改头像</span>
+						%else:
+							<img src="${item.upic.url}" alt="${item}" />
+						%endif
+					</li>
+					%if cUser and cUser.id == item.id:
+						<li>
+							<span class="item">Email：</span>
+							${item.email}
+							<a href="/modify/?dtype=info">修改资料</a>
+						</li>
+					%endif
 					<li>
-					<img src="${item.upic.url}" alt="${item}" />
+						<span class="item">所在地：</span>
+						${item.city}
 					</li>
 					<li>
-					${item.email}
-					</li>
-					<li>
-					${item.city}
-					</li>
-					<li>
-					${item.reg_date}
-					</li>
-					<li>
-					${item.level}
-					</li>
-					<li>
-					${item.score}
+						<span class="item">注册时间：</span>
+						${item.reg_date}
 					</li>
 				</ul>
 			</div>
+		</div>
+	</div>
+	<div class="box">
+		<h2 class="bt">
+			<span class="tit">${item} 添加的书</span>
+		</h2>
+		<div class="bc usersbook">
+			%if len(added_book) != 0:
+			<ul class="list booklist">
+				%for book in added_book:
+				<li>
+					<a href="/book/${book.id}">${book}</a>
+				</li>
+				%endfor
+			</ul>
+			%else:
+				暂无记录
+			%endif
 		</div>
 	</div>
 </div>

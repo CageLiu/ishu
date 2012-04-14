@@ -104,11 +104,12 @@ def login(request):
     return render_to_response('dushu/login.html',locals())
 
 def logout(request):
+    ref_page = request.GET.get('ref_page',"/")
     try:
         del request.session['uid']
     except KeyError:
         pass
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect(ref_page)
 
 def addreply(request,**args):
     cUser = args['User']
@@ -123,15 +124,16 @@ def addreply(request,**args):
             'author'  : cUser.id
         }
         newreply = dm.Reply.objects.create(**replydata)
+        #buildship()
     return HttpResponseRedirect('/posts/' + request.POST['posts'])
 
 def addbook(request,**args):
     cUser = args['User']
     currentpage = "book"
     if request.method == "POST":
-        bpic         = request.FILES.get('bpic',None)
+        bpic = request.FILES.get('bpic',None)
         if bpic:
-            picname = 'book' + str(max([i.id for i in dm.Book.objects.all()] or [0]) + 1) + '.' + bpic.name.split('.')[-1]
+            picname = 'book' + str(max([i.id for i in dm.Book.objects.all()] or [0]) + 1) + '.png'
             img = Image.open(bpic)
             img.thumbnail((100,120),Image.ANTIALIAS)
             canvas = Image.new("RGB",(100,120),0xffffff)
@@ -145,7 +147,7 @@ def addbook(request,**args):
             elif img.size[0] >= 100 and img.size[1] < 120:
                 box = (0,(canvas.size[1] - img.size[1]) / 2,100,(canvas.size[1] + img.size[1]) / 2)
             canvas.paste(img,box)
-            canvas.save(MEDIA_ROOT + FILE_PATH['book'] + picname,quality=100)
+            canvas.save(MEDIA_ROOT + FILE_PATH['book'] + picname,quality = 100)
         else:
             picname = 'normal.png'
         bookdata = {
@@ -189,13 +191,16 @@ def addposts(request,**args):
             contenterror = u'笔记内容不能为空!'
             return render_to_response('dushu/addposts.html',locals())
         newPosts = dm.Posts.objects.create(**postsdata)
-        if int(postsdata['book']):
-            try:
-                dm.U_B_Ship.objects.get(user = cUser.id,book = postsdata['book'])
-            except dm.U_B_Ship.DoesNotExist:
-                dm.U_B_Ship.objects.create(user = cUser.id,book = postsdata['book'])
+        buildship(int(postsdata['book']),cUser.id)
         return HttpResponseRedirect("/posts/" + str(newPosts.id))
     return render_to_response('dushu/addposts.html',locals())
+
+def buildship(bookid = 0,userid = 0):
+    if bookid and userid:
+        try:
+            dm.U_B_Ship.objects.get(user = userid,book = bookid)
+        except dm.U_B_Ship.DoesNotExist:
+            dm.U_B_Ship.objects.create(user = userid,book = bookid)
 
 def getitem(model,args):
     try:
@@ -223,7 +228,7 @@ def viewitem(request,models,action = '',args = 0):
                         updata['publish_time'] = request.POST['publish_time'] or u'未知'
                         updata['publishers']   = request.POST['publishers'] or u'未知'
                         if bpic:
-                            picname = 'book' + str(args) + '.' + bpic.name.split('.')[-1]
+                            picname = 'book' + str(args) + '.png'
                             img = Image.open(bpic)
                             img.thumbnail((100,120),Image.ANTIALIAS)
                             canvas = Image.new("RGB",(100,120),0xffffff)
@@ -254,7 +259,7 @@ def viewitem(request,models,action = '',args = 0):
                 pagenum = 15
             elif models == "user":
                 allitem = model.objects.filter(valid = 1).order_by("-id")
-                pagenum = 30
+                pagenum = 50
             pages = len(allitem) % pagenum and len(allitem) / pagenum + 1 or len(allitem) / pagenum
             try:
                 page = request.GET['page']
@@ -332,6 +337,137 @@ def confirmail(request):
         send_mail(subject,mail_content,[request.GET['email']])
         dm.ConfirMail.objects.create(user = user.id,vcode = vcode)
         return HttpResponse(u'邮件发送成功')
+
+def modify(request,**args):
+    cUser = args['User']
+    currentpage = "user"
+    try:
+        dtype = request.GET['dtype']
+    except KeyError:
+        raise Http404
+
+    if request.method == "POST":
+        if dtype == 'info':
+            data = {
+                'nickname' : request.POST['nickname'],\
+                'city'     : request.POST['city']
+            }
+            success = u'资料更新成功'
+        elif dtype == 'pwd':
+            if md5(request.POST['oldpwd']).hexdigest() != cUser.pwd:
+                error = u"密码错误"
+                return HttpResponseRedirect('/modify/?dtype=pwd&error=' + error)
+            else:
+                data = {'pwd' : md5(request.POST['newpwd']).hexdigest()}
+                success = u'密码修改成功'
+        elif dtype == 'face':
+            data = {}
+            bigpicpath = "user" + str(cUser.id) + "_big.png"
+            smallpicname = "user" + str(cUser.id) + ".png"
+            try:
+                bigpic = Image.open(MEDIA_ROOT + FILE_PATH['user'] + bigpicpath)
+                box = [int(i) for i in request.POST['place'].split("_")]
+                smallpic = bigpic.crop(box).resize((48,48),Image.ANTIALIAS)
+                smallpic.save(MEDIA_ROOT + FILE_PATH["user"] + smallpicname)
+            except IOError:
+                return HttpResponseRedirect("/modify/?dtype=face")
+            success = u''
+            return HttpResponseRedirect('/modify/?dtype=face')
+        dm.User.objects.filter(id = cUser.id).update(**data)
+        return HttpResponseRedirect(request.get_full_path() + "&success=" + success)
+    return render_to_response("dushu/modify" + dtype + ".html",locals())
+
+def lzform(request,**args):
+    cUser = args['User']
+    if request.method == "GET":
+        raise Http404
+    elif request.method == "POST":
+        upic = request.FILES.get("upic",None)
+        bigpicname = "user" + str(cUser.id) + "_big.png"
+        smallpicname = "user" + str(cUser.id) + ".png"
+        if upic:
+            bigpic = Image.open(upic)
+            normalWidth = bigpic.size[0]
+            normalHeight = bigpic.size[1]
+            if normalWidth < 48 or normalHeight < 48:
+                reSize = (48,48)
+            else:
+                reSize = (240,240 * normalHeight / normalWidth)
+            bigpic = bigpic.resize(reSize,Image.ANTIALIAS)
+            placeSize = min(bigpic.size)
+            box = (
+                   (bigpic.size[0] - placeSize) / 2,
+                   (bigpic.size[1] - placeSize) / 2,
+                   (bigpic.size[0] + placeSize) / 2,
+                   (bigpic.size[1] + placeSize) / 2
+                  )
+            smallpic = bigpic.crop(box).resize((48,48),Image.ANTIALIAS)
+            smallpic.save(MEDIA_ROOT + FILE_PATH['user'] + smallpicname,quality = 100)
+            bigpic.save(MEDIA_ROOT + FILE_PATH['user'] + bigpicname,quality = 100)
+            success = u"图片上传成功"
+            data = {'upic':FILE_PATH['user'] + smallpicname}
+            dm.User.objects.filter(id = cUser.id).update(**data)
+        else:
+            error = u'您没有选择图片或图片格式错误'
+            return HttpResponseRedirect('/modify/?dtype=face&error=' + error)
+    return HttpResponseRedirect("/modify/?dtype=face")
+
+def edit(request,**args):
+    cUser = args['User']
+    currentpage = 'posts'
+    pid = request.GET.get('pid',0)
+    try:
+        model = dm.__dict__[args['model'].capitalize()]
+    except KeyError:
+        raise Http404
+    try:
+        arc = model.objects.get(id = pid)
+        postsid = pid
+        try:
+            subject = arc.subject
+        except AttributeError:
+            postsid = arc.posts
+            subject = ''
+    except model.DoesNotExist:
+        error = u"内容不存在"
+        return render_to_response("dushu/tips.html",locals())
+    if request.method == "POST":
+        if args['model'] == 'posts':
+            data = {
+                'subject':request.POST['subject'],
+                'content':request.POST['content']
+            }
+        elif args['model'] == 'reply':
+            data = {'content':request.POST['content']}
+        model.objects.filter(id = pid).update(**data)
+        return HttpResponseRedirect("/posts/" + str(postsid))
+    return render_to_response("dushu/edit.html",locals())
+    #try:
+        #arc = dm.Posts.objects.get(id = request.GET.get("pid",0))
+        #subject = arc.subject
+        #return render_to_response('dushu/edit.html',locals())
+        #try:
+            #arc = dm.Reply.objects.get(id = request.GET.get("pid",0))
+            #subject = ''
+            #return render_to_response('dushu/edit.html',locals())
+        #except dm.Reply.DoesNotExist:
+            #error = u'内容不存在'
+            #return render_to_response('dushu/tips.html',locals())
+    #except dm.Posts.DoesNotExist:
+        #error = u'内容不存在'
+        #return render_to_response('dushu/tips.html',locals())
+    #if arc.author != cUser.id:
+        #return render_to_response('dushu/tips.html',locals())
+
+#def backpwd(request):
+    #currentpage = 'user'
+    #email = request.GET.get('email')
+    #try:
+        #user = dm.User.objects.get(email = email)
+        #dm.User.objects.filter(email = email).update(pwd = md5('123456').hexdigest())
+    #except dm.User.DoesNotExist:
+        #error = u'用户不存在'
+    #return render_to_response('dushu/backpwd.html',locals())
 
 #checking page
 def checking(request,models,fields):

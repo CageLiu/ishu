@@ -1,0 +1,90 @@
+##-*-coding:utf-8-*-
+<%inherit file="base.html" />
+
+<%def name="title()">
+	i-Shu | 修改资料
+</%def>
+
+<%def name="outfile()">
+	<script src="/static/js/jquery.js"></script>
+	<script src="/static/js/jquery.Jcrop.min.js"></script>
+</%def>
+
+<%def name="main()">
+<%
+	import random
+	sjs = random.randrange(1000)
+%>
+<h2 class="crumbs">修改头像</h2>
+<div class="main">
+		<div class="form modify">
+			<form action="/lzform/" method="post" enctype="multipart/form-data">
+				<div class="item">
+					<label>头像：</label>
+					<img src="${cUser.upic.url}?v=${sjs}" alt="${cUser}" />
+				</div>
+				%if "normal.png" not in cUser.upic.url:
+				<div class="item clearfix">
+					<img src="/static/media/user_pic/user${cUser.id}_big.png/?v=${sjs}" id="jcrop_target" />
+					<div style="width:48px;height:48px;overflow:hidden;float:left;border:1px solid #ccc">
+						<img src="/static/media/user_pic/user${cUser.id}_big.png/?v=${sjs}" id="preview" />
+					</div>
+					<script type="text/javascript">
+						$("#jcrop_target").load(function(){
+								imgWidth = $("#jcrop_target").outerWidth();
+								imgHeight = $("#jcrop_target").height();
+								imgPlace = Math.min(imgWidth,imgHeight);
+								cx1 = (imgWidth - imgPlace) / 2;
+								cy1 = (imgHeight - imgPlace) / 2;
+								cx2 = (imgWidth + imgPlace) / 2;
+								cy2 = (imgHeight + imgPlace) / 2;
+								$('#jcrop_target').Jcrop({
+									onChange: showPreview,
+									onSelect: showPreview,
+									setSelect: [cx1,cy1,cx2,cy2],
+									//setSelect: [0,0,48,48],
+									aspectRatio: 1
+									});
+								function showPreview(coords){
+									var rx = 48 / coords.w;
+									var ry = 48 / coords.h;
+									$('#preview').css({
+									width: Math.round(rx * imgWidth) + 'px',
+									height: Math.round(ry * imgHeight) + 'px',
+									marginLeft: '-' + Math.round(rx * coords.x) + 'px',
+									marginTop: '-' + Math.round(ry * coords.y) + 'px'
+									});
+									$("#faceplace").val(coords.x + "_" + coords.y + "_" + coords.x2 + "_" + coords.y2);
+								}
+						});
+						</script>
+				</div>
+				%endif
+				<div class="item">
+					<label>选择新头像：</label>
+					<input type="file" name="upic" id="truefile" rel="user" />
+					<span class="imitatefile">
+						<input class="txt w166" type="text" id="filetxt" />
+						<input class="btn" type="button" id="uploadfile" value="选择图片" />
+					</span>
+					<input class="btn" type="submit" value="上传头像" id="upupic" />
+					%if not request.GET.get("error"):
+					<span class="tips">图片格式为：jpg、gif、png</span>
+					%else:
+					<span class="tips error">${request.GET.get("error")}</span>
+					%endif
+				</div>
+			</form>
+			<form action="" method="post">
+				<div class="item" style="margin-top:60px;">
+					<input type="hidden" name="place" id="faceplace" />
+					<input class="btn" type="submit" value="保存头像" />
+				</div>
+			</form>
+		</div>
+</div>
+<div class="side">
+	<a href="/modify/?dtype=info">修改资料</a>
+	<a href="/modify/?dtype=pwd">修改密码</a>
+</div>
+</%def>

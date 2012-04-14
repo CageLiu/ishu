@@ -1,0 +1,46 @@
+##-*-coding:utf-8-*-
+<%inherit file="base.html" />
+
+<%def name="title()">
+	i-Shu | 修改资料
+</%def>
+
+<%def name="outfile()">
+	<script type="text/javascript" src="/static/js/area.js"></script>
+</%def>
+
+<%def name="main()">
+<h2 class="crumbs">修改资料</h2>
+<div class="main">
+	<form action="/modify/?dtype=info" method="post">
+		<div class="form modify">
+			%if request.GET.get("success"):
+			<div class="item">
+				<span class="tips correct">
+					${request.GET.get('success')}
+				</span>
+			</div>
+			%endif
+			<div class="item">
+				<label>Email：</label>
+				<input class="txt w250 readonly" type="text" readonly value="${cUser.email}"/>
+			</div>
+			<div class="item">
+				<label>昵称：</label>
+				<input class="txt w250" type="text" name="nickname" value="${cUser.nickname}" />
+			</div>
+			<div class="item">
+				<label>城市：</label>
+				<input class="txt w250" type="text" name="city" value="${cUser.city}" id="perNative" />
+			</div>
+			<div class="item">
+				<input class="btn" type="submit" value="保存修改" />
+			</div>
+		</div>
+	</form>
+</div>
+<div class="side">
+	<a href="/modify/?dtype=pwd">修改密码</a>
+	<a href="/modify/?dtype=face">修改头像</a>
+</div>
+</%def>

@@ -1,0 +1,77 @@
+##-*-coding:utf-8-*-
+<%inherit file="base.html" />
+
+<%def name="title()">
+	i-Shu | 修改资料
+</%def>
+
+<%def name="outfile()"></%def> 
+
+<%def name="main()">
+<h2 class="crumbs">修改密码</h2>
+<div class="main">
+	<form action="/modify/?dtype=pwd" method="post">
+		<div class="form modify">
+			%if request.GET.get("success"):
+			<div class="item">
+				<span class="tips correct">
+					${request.GET.get('success')}
+				</span>
+			</div>
+			%endif
+			<div class="item">
+				<label>旧密码：</label>
+				<input class="txt w250" type="password" name="oldpwd"/>
+				%if request.GET.get("error"):
+				<span class="tips error">${request.GET['error']}</span>
+				%endif
+			</div>
+			<div class="item">
+				<label>新密码：</label>
+				<input class="txt w250" type="password" name="newpwd"/>
+				<span class="tips"></span>
+			</div>
+			<div class="item">
+				<label>确认新密码：</label>
+				<input class="txt w250" type="password" name="newpwd"/>
+				<span class="tips"></span>
+			</div>
+			<div class="item">
+				<input class="btn" type="submit" value="修改密码" id="changepwd" />
+			</div>
+		</div>
+		<script type="text/javascript">
+			pwd = $("input[name='newpwd']");
+			var pwdvalid = false;
+			pwd.blur(function(){
+				if($(this).val().length == 0){
+					$(this).siblings("span.tips").addClass("error").removeClass("correct").text("密码不能为空");
+					pwdvalid = false;
+				}else if($(this).val().length < 6){
+					$(this).siblings("span.tips").addClass("error").removeClass("correct").text("密码最少6位");
+					pwdvalid = false;
+				}else if($(this).val().length > 18){
+					$(this).siblings("span.tips").addClass("error").removeClass("correct").text("密码最多18位");
+					pwdvalid = false;
+				}
+				else{
+					$(this).siblings("span.tips").addClass("correct").removeClass("error").text("√");
+					pwdvalid = true;
+				}
+			});
+			$("#changepwd").click(function(){
+				if(pwd.eq(0).val() !== pwd.eq(1).val()){
+					pwd.eq(1).siblings("span.tips").addClass("error").removeClass("correct").text("两次输入的密码不一致");
+					return false;
+				}else if(!pwdvalid){
+					return false;
+				}
+			});
+		</script>
+	</form>
+</div>
+<div class="side">
+	<a href="/modify/?dtype=info">修改资料</a>
+	<a href="/modify/?dtype=face">修改头像</a>
+</div>
+</%def>
